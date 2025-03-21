@@ -7,8 +7,7 @@ except ImportError:
     # Try backported to PY<37 `importlib_resources`.
     import importlib_resources as pkg_resources
 import numpy as np, json
-from skimage.color import rgb2lab
-from skimage.metrics import delta_e
+from skimage.color import rgb2lab, deltaE_ciede2000
 
 MAX_RGB = 255.0
 HIERARCHY_JSON_FILE = "color_hierarchy.json"
@@ -81,7 +80,7 @@ def get_color_from_lab(lab_color: List[float]) -> Dict:
     # Calculate distance using CIEDE2000 algorithm
     lab_color_array = np.array([lab_color])
     # Compute distances between the input lab color and all colors in our database
-    dists = np.array([delta_e(lab_color_array[0], color_lab, method='ciede2000') 
+    dists = np.array([deltaE_ciede2000(lab_color_array[0], color_lab) 
                      for color_lab in color_data['lab_values']])
     
     xkcd_name = color_data["xkcd_names"][dists.argmin()]
