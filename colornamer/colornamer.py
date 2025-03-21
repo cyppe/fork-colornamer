@@ -7,7 +7,8 @@ except ImportError:
     # Try backported to PY<37 `importlib_resources`.
     import importlib_resources as pkg_resources
 import numpy as np, json
-from skimage.color import rgb2lab, deltaE_ciede2000
+from skimage.color import rgb2lab
+from skimage.metrics import delta_e
 
 MAX_RGB = 255.0
 HIERARCHY_JSON_FILE = "color_hierarchy.json"
@@ -77,9 +78,12 @@ def get_color_from_lab(lab_color: List[float]) -> Dict:
         lab_color[2] >= -128 and lab_color[2] <= 127
     ), "B should be between -128 and 127."
 
-    # lab_values: (n, 3). lab_color: (3,). wrap lab_color so it's (1, 3) and
-    # vectorized comparison can work.
-    dists = deltaE_ciede2000(color_data['lab_values'], np.array([lab_color]), channel_axis=1)
+    # Calculate distance using CIEDE2000 algorithm
+    lab_color_array = np.array([lab_color])
+    # Compute distances between the input lab color and all colors in our database
+    dists = np.array([delta_e(lab_color_array[0], color_lab, method='ciede2000') 
+                     for color_lab in color_data['lab_values']])
+    
     xkcd_name = color_data["xkcd_names"][dists.argmin()]
     return color_data["color_hierarchy"][xkcd_name]
 

@@ -7,6 +7,13 @@ pip install colornamer
 ```
 (published on PyPI [here](https://pypi.org/project/colornamer/))
 
+## Requirements
+- Python 3.8 or higher (tested up to 3.13)
+- Dependencies:
+  - numpy>=2.2.0
+  - scikit-image>=0.25.2
+  - importlib_resources>=6.5.2
+
 ## Usage
 ```
 from colornamer import get_color_from_rgb
@@ -45,5 +52,18 @@ returns (ordered for sake of explanation):
 - Color Family is even coarser, and has 26 families. These are all primary, secondary, or tertiary colors, or corresponding values for neutrals.
 - Color Or Neutral tells whether something is a "neutral" (like white, black, or khaki) or a "color".
 - Color Type is another dimension that tells, roughly, how light, dark or saturated a color is. There are 11 color types.
+
+## Development
+
+### Setup
+```
+pip install -e .
+pip install -r requirements-dev.txt
+```
+
+### Testing
+```
+pytest
+```
 
 For more details, see the [blog post](https://multithreaded.stitchfix.com/blog/2020/09/02/what-color-is-this/).
